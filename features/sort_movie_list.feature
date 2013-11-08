@@ -24,12 +24,10 @@ Background: movies have been added to database
 Scenario: sort movies alphabetically
   When I follow "Movie Title"
   # your steps here
-  And I click the title_header
   Then I should see "Aladdin" before "The Terminator"
 
 Scenario: sort movies in increasing order of release date
   When I follow "Release Date"
   # your steps here
-  And I click the release_date_header
   Then I should see "The Terminator" before "Aladdin"
 
