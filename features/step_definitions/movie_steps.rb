@@ -28,24 +28,33 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
   ratings = rating_list.split(/\s*,\s*/)
   ratings.each do |rating|
-    if (uncheck)
-      step "I check \"ratings_#{rating}\""
-    else
-      step "I uncheck \"ratings_#{rating}\""
-    end
+    step "I #{uncheck}check \"ratings_#{rating}\""
   end
 end
 
-Then /^I should see all movies with the following ratings: (.*)/ do |rating_list|
-  pending # express the regexp above with the code you wish you had
+When /^I (un)?check all ratings$/ do |uncheck|
+  allRatings = ""
+  Movie.all_ratings.each do |rating|
+    allRatings + rating + ", "
+  end
+  step "I #{uncheck}check the following ratings: #{allRatings}"
+end
+
+Then /^I should (.*) the movies with the following ratings: (.*)/ do |seen, rating_list|
   ratings = rating_list.split(/\s*,\s*/)
-  movies = Movie.find_all_by_rating(ratings)
-  movies.name.each do |name|
+  case seen
+  when "not seen"
+    movies = Movie.find_all_by_rating(Movie.all_ratings - ratings)
+  else
+    movies = Movie.find_all_by_rating(ratings)
   end
-
+  movies.each do |movie|
+    step "I should #{seen} \"#{movie.title}\""
+  end
 end
 
-Then /^I should not see any movies with the following ratings: (.*)/ do |rating_list|
-  pending # express the regexp above with the code you wish you had
+Then /^I should see all of the movies$/ do
+  step "I should see the movies with the following ratings: #{Movie.all_ratings}"
 end
+
 
